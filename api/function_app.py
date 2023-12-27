@@ -2,24 +2,7 @@ import azure.functions as func
 import logging
 import json
 
-app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
-
-@app.route(route="getData")
-def getData(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Python HTTP trigger function processed a request.')
-
-    value = req.params.get('value')
-    if not value:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            value = req_body.get('value')
-
-    if value == 'list':
-        return func.HttpResponse(json.dumps([
-            {
+todos = [{
                 "category": "personal",
                 "content": "test message 1",
                 "createdAt": 1703632030060,
@@ -31,17 +14,20 @@ def getData(req: func.HttpRequest) -> func.HttpResponse:
                 "createdAt": 1703631889087,
                 "done": False
             },
-        ]))
-    elif value == 'name':
-        return func.HttpResponse(
-             "Name",
-             status_code=200
-        )
-    else:
-        return func.HttpResponse(
-             "Name",
-             status_code=200
-        )
+        ]
+name = [{"name": "enterName"}]
+
+app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
+
+@app.route(route="getName")
+def getName(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Python HTTP trigger function processed a request.')
+    return func.HttpResponse(json.dumps(name))
+
+@app.route(route="getTodos")
+def getTodos(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Python HTTP trigger function processed a request.')
+    return func.HttpResponse(json.dumps(todos))
     
 @app.route(route="addTodo")
 def addTodo(req: func.HttpRequest) -> func.HttpResponse:
@@ -55,7 +41,21 @@ def addTodo(req: func.HttpRequest) -> func.HttpResponse:
 
     logging.info('outputting post data:')
     logging.info(req.get_json())
-    return func.HttpResponse(
-             "post response",
-             status_code=200
-        )
+    todos.append(req.get_json())
+    return func.HttpResponse(json.dumps(todos))
+
+@app.route(route="removeTodo")
+def removeTodo(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Python HTTP trigger function processed a POST request to delete.')
+    logging.info('outputting post data:')
+    logging.info(req.get_json())
+    todos.remove(req.get_json())
+    return func.HttpResponse(json.dumps(todos))
+
+@app.route(route="setName")
+def setName(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Python HTTP trigger function processed a POST request to set name.')
+    logging.info('outputting post data:')
+    logging.info(req.get_json())
+    name = req.get_json()
+    return func.HttpResponse(name)

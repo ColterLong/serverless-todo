@@ -17,64 +17,71 @@ const addTodo = () => {
     return
   }
 
-  todos.value.push({
-    content: input_content.value,
-    category: input_category.value,
-    done: false,
-    createdAt: new Date().getTime()
-  })
+  axios.post('api/addTodo',{
+      category: input_category.value,
+      content: input_content.value,
+      createdAt: new Date().getTime(),
+      done: false
+      })
+      .then(res => {
+          todos.value = res.data
+          console.log('Added item to python arr via post call:')
+      })
+      .catch(error => {
+          console.error('Error:', error);
+      });
 
   input_content.value = ''
   input_category.value = null
 }
 
 const removeTodo = todo => {
-  todos.value = todos.value.filter(t => t !== todo)
+  axios.post('api/removeTodo',todo)
+      .then(res => {
+          todos.value = res.data
+          console.log('Removed item from python arr via post call:')
+      })
+      .catch(error => {
+          console.error('Error:', error);
+      });
 }
 
-watch(todos, newVal => {
-  localStorage.setItem('todos', JSON.stringify(newVal))
-}, { deep: true })
-
 // changes name
+// TODO add button to submit new name instead of as type
 watch(name, (newVal) => {
-  localStorage.setItem('name', newVal);
+  console.log('new val:')
+  console.log(newVal)
+  axios.post('api/setName',{
+    name: newVal
+  })
+      .then(res => {
+        console.log('res data from set name')
+        console.log(res.data[0].name)
+          name = res.data[0].name
+          console.log('Set name via post call:')
+      })
+      .catch(error => {
+          console.error('Error:', error);
+      });
 })
 
 // pulls name on  mount
 onMounted(() => {
-  name.value = localStorage.getItem('name') || ''
-  todos.value = JSON.parse(localStorage.getItem('todos')) || []
-
-  axios.get('api/getData')
+  axios.get('api/getName')
             .then(res => {
                 console.log('Your name')
                 console.log(res.data)
-                name.value = res.data
+                name.value = res.data.name
             })
             .catch(error => {
                 console.error('Error:', error);
             });
 
-  axios.get('api/getData?value=list')
+  axios.get('api/getTodos')
             .then(res => {
                 console.log('hopefully a list is outputted below')
                 console.log(res.data)
                 todos.value = res.data;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-
-  axios.post('api/addTodo',{
-              category: "personal",
-              content: "test message 1",
-              createdAt: 1703632030060,
-              done: false
-            })
-            .then(res => {
-                console.log('trying a post request. output is below:')
-                console.log(res.data)
             })
             .catch(error => {
                 console.error('Error:', error);
