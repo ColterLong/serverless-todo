@@ -203,7 +203,8 @@ input:checked ~ .bubble::after {
 	align-items: center;
 }
 
-.todo-item .actions button {
+.todo-item .actions button,
+.updateName {
 	display: block;
 	padding: 0.5rem;
 	border-radius: 0.25rem;
@@ -212,11 +213,13 @@ input:checked ~ .bubble::after {
 	transition: 0.2s ease-in-out;
 }
 
-.todo-item .actions button:hover {
+.todo-item .actions button:hover,
+.updateName:hover {
 	opacity: 0.75;
 }
 
-.todo-item .actions .edit {
+.todo-item .actions .edit,
+.updateName {
 	margin-right: 0.5rem;
 	background-color: var(--primary);
 }

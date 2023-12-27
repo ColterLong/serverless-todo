@@ -46,31 +46,26 @@ const removeTodo = todo => {
       });
 }
 
-// changes name
-// TODO add button to submit new name instead of as type
-watch(name, (newVal) => {
-  console.log('new val:')
-  console.log(newVal)
-  axios.post('api/setName',{
-    name: newVal
-  })
+const updateName = newName => {
+  console.log('new name: ' + newName)
+  axios.post('api/setName',{name: newName})
       .then(res => {
-        console.log('res data from set name')
-        console.log(res.data[0].name)
-          name = res.data[0].name
-          console.log('Set name via post call:')
+          console.log('res data updated name')
+          console.log(res.data.name)
+          name.value = res.data.name
+          console.log('Updated name from python arr via post call:')
       })
       .catch(error => {
           console.error('Error:', error);
       });
-})
+}
 
 // pulls name on  mount
 onMounted(() => {
   axios.get('api/getName')
             .then(res => {
                 console.log('Your name')
-                console.log(res.data)
+                console.log(res.data.name)
                 name.value = res.data.name
             })
             .catch(error => {
@@ -94,6 +89,7 @@ onMounted(() => {
     <section class="greeting">
       <h2 class="title">
         What's up, <input type="text" placeholder="Name here" v-model="name">
+        <button class="updateName" @click="updateName(name)">Save name</button>
       </h2>
     </section>
 

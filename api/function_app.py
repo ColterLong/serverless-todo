@@ -15,7 +15,7 @@ todos = [{
                 "done": False
             },
         ]
-name = [{"name": "enterName"}]
+name = {"name": "enterName"}
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
@@ -58,4 +58,4 @@ def setName(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('outputting post data:')
     logging.info(req.get_json())
     name = req.get_json()
-    return func.HttpResponse(name)
+    return func.HttpResponse(json.dumps(name))
