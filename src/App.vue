@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue'
+import axios from 'axios';
 
 const todos = ref([])
 const name = ref('');
@@ -44,6 +45,40 @@ watch(name, (newVal) => {
 onMounted(() => {
   name.value = localStorage.getItem('name') || ''
   todos.value = JSON.parse(localStorage.getItem('todos')) || []
+
+  axios.get('api/getData')
+            .then(res => {
+                console.log('Your name')
+                console.log(res.data)
+                name.value = res.data
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+  axios.get('api/getData?value=list')
+            .then(res => {
+                console.log('hopefully a list is outputted below')
+                console.log(res.data)
+                todos.value = res.data;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+  axios.post('api/addTodo',{
+              category: "personal",
+              content: "test message 1",
+              createdAt: 1703632030060,
+              done: false
+            })
+            .then(res => {
+                console.log('trying a post request. output is below:')
+                console.log(res.data)
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
 })
 </script>
 
