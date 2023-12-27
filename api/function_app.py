@@ -34,7 +34,7 @@ def getData(req: func.HttpRequest) -> func.HttpResponse:
         ]))
     elif value == 'name':
         return func.HttpResponse(
-             "Colt",
+             "Name",
              status_code=200
         )
     else:
