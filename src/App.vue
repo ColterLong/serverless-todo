@@ -81,6 +81,24 @@ onMounted(() => {
             .catch(error => {
                 console.error('Error:', error);
             });
+
+  axios.get('api/makeTable')
+            .then(res => {
+                console.log(res.data)
+                // todos.value = res.data;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+            
+  axios.get('api/pullTable')
+            .then(res => {
+                console.log(res.data)
+                // todos.value = res.data;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
 })
 </script>
 
